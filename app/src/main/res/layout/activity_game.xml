@@ -202,13 +202,18 @@
         android:textColor="#FF2196F3"/>
 
     <!-- Powered by -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Powered by：高明"
         android:textSize="12sp"
         android:gravity="center"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:textColor="#FF9E9E9E"/>
 
 </LinearLayout>
