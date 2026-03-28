@@ -22,6 +22,7 @@ public class GameActivity extends AppCompatActivity {
     private int difficulty = 1;
     private List<Double> currentNumbers = new ArrayList<>();
     private List<List<Double>> history = new ArrayList<>();
+    private String hintSolution = null;
 
     private int selectedNumberIndex = -1;
     private String selectedOperator = null;
@@ -98,6 +99,9 @@ public class GameActivity extends AppCompatActivity {
         
         View btnRestart = findViewById(R.id.btnRestart);
         if (btnRestart != null) btnRestart.setOnClickListener(v -> startNewGame());
+        
+        View btnHint = findViewById(R.id.btnHint);
+        if (btnHint != null) btnHint.setOnClickListener(v -> showHint());
     }
 
     private void startNewGame() {
@@ -106,11 +110,125 @@ public class GameActivity extends AppCompatActivity {
         selectedNumberIndex = -1;
         selectedOperator = null;
         
+        // 计算这题的提示
+        hintSolution = findHint(new ArrayList<>(currentNumbers));
+        
         if (tvMessage != null) tvMessage.setText("");
         
         updateDisplay();
         resetAllNumberColors();
         history.add(new ArrayList<>(currentNumbers));
+    }
+    
+    // 判断数字是否为整数
+    private boolean isInteger(double num) {
+        return num == Math.floor(num) && !Double.isInfinite(num);
+    }
+
+    // 查找解题提示
+    private String findHint(List<Double> numbers) {
+        if (numbers.size() == 1) {
+            if (Math.abs(numbers.get(0) - 24) < 0.001) {
+                return formatNumber(numbers.get(0));
+            }
+            return null;
+        }
+
+        for (int i = 0; i < numbers.size(); i++) {
+            for (int j = i + 1; j < numbers.size(); j++) {
+                List<Double> remaining = new ArrayList<>();
+                for (int k = 0; k < numbers.size(); k++) {
+                    if (k != i && k != j) {
+                        remaining.add(numbers.get(k));
+                    }
+                }
+
+                double a = numbers.get(i);
+                double b = numbers.get(j);
+
+                // 尝试加法（结果必须是整数）
+                double addResult = a + b;
+                if (isInteger(addResult)) {
+                    List<Double> next = new ArrayList<>(remaining);
+                    next.add(addResult);
+                    String result = findHint(next);
+                    if (result != null) {
+                        return formatNumber(a) + " + " + formatNumber(b) + " = " + formatNumber(addResult) + ", " + result;
+                    }
+                }
+
+                // 尝试减法 a-b（结果必须是整数）
+                double sub1Result = a - b;
+                if (isInteger(sub1Result)) {
+                    List<Double> next = new ArrayList<>(remaining);
+                    next.add(sub1Result);
+                    String result = findHint(next);
+                    if (result != null) {
+                        return formatNumber(a) + " - " + formatNumber(b) + " = " + formatNumber(sub1Result) + ", " + result;
+                    }
+                }
+
+                // 尝试减法 b-a（结果必须是整数）
+                double sub2Result = b - a;
+                if (isInteger(sub2Result)) {
+                    List<Double> next = new ArrayList<>(remaining);
+                    next.add(sub2Result);
+                    String result = findHint(next);
+                    if (result != null) {
+                        return formatNumber(b) + " - " + formatNumber(a) + " = " + formatNumber(sub2Result) + ", " + result;
+                    }
+                }
+
+                // 尝试乘法（结果必须是整数）
+                double mulResult = a * b;
+                if (isInteger(mulResult)) {
+                    List<Double> next = new ArrayList<>(remaining);
+                    next.add(mulResult);
+                    String result = findHint(next);
+                    if (result != null) {
+                        return formatNumber(a) + " × " + formatNumber(b) + " = " + formatNumber(mulResult) + ", " + result;
+                    }
+                }
+
+                // 尝试除法 a/b（结果必须是整数）
+                if (b != 0 && a % b == 0) {
+                    double div1Result = a / b;
+                    List<Double> next = new ArrayList<>(remaining);
+                    next.add(div1Result);
+                    String result = findHint(next);
+                    if (result != null) {
+                        return formatNumber(a) + " ÷ " + formatNumber(b) + " = " + formatNumber(div1Result) + ", " + result;
+                    }
+                }
+
+                // 尝试除法 b/a（结果必须是整数）
+                if (a != 0 && b % a == 0) {
+                    double div2Result = b / a;
+                    List<Double> next = new ArrayList<>(remaining);
+                    next.add(div2Result);
+                    String result = findHint(next);
+                    if (result != null) {
+                        return formatNumber(b) + " ÷ " + formatNumber(a) + " = " + formatNumber(div2Result) + ", " + result;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
+    private void showHint() {
+        if (hintSolution != null) {
+            // 去掉末尾的 ", 24" 或 ",24"
+            String hint = hintSolution;
+            if (hint.endsWith(", 24")) {
+                hint = hint.substring(0, hint.length() - 4);
+            } else if (hint.endsWith(",24")) {
+                hint = hint.substring(0, hint.length() - 3);
+            }
+            if (tvMessage != null) tvMessage.setText("提示: " + hint);
+        } else {
+            if (tvMessage != null) tvMessage.setText("此题无解");
+        }
     }
     
     // 重置所有数字颜色为白色
