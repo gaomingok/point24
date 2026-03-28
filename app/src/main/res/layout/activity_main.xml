@@ -50,4 +50,14 @@
         android:backgroundTint="#FFF44336"
         android:layout_margin="8dp"/>
 
+    <!-- Powered by -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Powered by：高明"
+        android:textSize="12sp"
+        android:gravity="center"
+        android:layout_marginTop="48dp"
+        android:textColor="#FF9E9E9E"/>
+
 </LinearLayout>

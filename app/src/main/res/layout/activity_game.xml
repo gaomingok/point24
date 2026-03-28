@@ -42,8 +42,7 @@
     <!-- 目标显示 -->
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:text="@string/target"
         android:textSize="24sp"
         android:textStyle="bold"
