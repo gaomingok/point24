@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.Point24" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">#FF6200EE</item>
+        <item name="colorPrimaryVariant">#FF3700B3</item>
+        <item name="colorOnPrimary">#FFFFFFFF</item>
+        <item name="colorSecondary">#FF03DAC5</item>
+        <item name="colorSecondaryVariant">#FF018786</item>
+        <item name="colorOnSecondary">#FF000000</item>
+        <item name="android:statusBarColor">#FF6200EE</item>
+    </style>
+
+    <style name="NumberButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textSize">32sp</item>
+        <item name="android:minWidth">80dp</item>
+        <item name="android:minHeight">80dp</item>
+    </style>
+
+    <style name="OperatorButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:textSize">24sp</item>
+        <item name="android:minWidth">60dp</item>
+        <item name="android:minHeight">60dp</item>
+    </style>
+
+    <style name="DifficultyButton" parent="Widget.MaterialComponents.Button">
+        <item name="android:textSize">18sp</item>
+        <item name="android:minWidth">150dp</item>
+        <item name="android:minHeight">60dp</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
+</resources>

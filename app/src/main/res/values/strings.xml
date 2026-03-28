@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">24点计算</string>
+    <string name="select_difficulty">选择难度</string>
+    <string name="easy">容易</string>
+    <string name="medium">中等</string>
+    <string name="hard">困难</string>
+    <string name="start_game">开始游戏</string>
+    <string name="target">目标: 24</string>
+    <string name="undo">撤销</string>
+    <string name="restart">重新开始</string>
+    <string name="back">返回</string>
+    <string name="correct">正确！</string>
+    <string name="wrong">计算错误，请重试</string>
+    <string name="no_solution">此题无解！</string>
+    <string name="next_question">下一题</string>
+    <string name="game_over">游戏结束</string>
+    <string name="score">得分: %d</string>
+    <string name="congratulations">恭喜！你成功计算出24点！</string>
+    <string name="current_result">当前: %s</string>
+    <string name="select_number">请选择数字</string>
+    <string name="select_operator">请选择运算符</string>
+</resources>
