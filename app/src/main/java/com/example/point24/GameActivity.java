@@ -74,7 +74,7 @@ public class GameActivity extends AppCompatActivity {
         btnMultiply = findViewById(R.id.btnMultiply);
         btnDivide = findViewById(R.id.btnDivide);
 
-        String diffText = "难度: " + (difficulty == 1 ? "容易" : difficulty == 2 ? "中等" : "困难");
+        String diffText = "难度: " + (difficulty == 1 ? "入门" : difficulty == 2 ? "容易" : difficulty == 3 ? "中等" : "困难");
         if (tvDifficulty != null) tvDifficulty.setText(diffText);
     }
 
@@ -125,8 +125,12 @@ public class GameActivity extends AppCompatActivity {
         return num == Math.floor(num) && !Double.isInfinite(num);
     }
 
-    // 查找解题提示
+    // 查找解题提示（传入当前难度）
     private String findHint(List<Double> numbers) {
+        return findHint(numbers, difficulty);
+    }
+    
+    private String findHint(List<Double> numbers, int diff) {
         if (numbers.size() == 1) {
             if (Math.abs(numbers.get(0) - 24) < 0.001) {
                 return formatNumber(numbers.get(0));
@@ -148,32 +152,32 @@ public class GameActivity extends AppCompatActivity {
 
                 // 尝试加法（结果必须是整数）
                 double addResult = a + b;
-                if (isInteger(addResult)) {
+                if (isInteger(addResult) && addResult >= 0) {
                     List<Double> next = new ArrayList<>(remaining);
                     next.add(addResult);
-                    String result = findHint(next);
+                    String result = findHint(next, diff);
                     if (result != null) {
                         return formatNumber(a) + " + " + formatNumber(b) + " = " + formatNumber(addResult) + ", " + result;
                     }
                 }
 
-                // 尝试减法 a-b（结果必须是整数）
+                // 尝试减法 a-b（结果必须是整数，不能是负数）
                 double sub1Result = a - b;
-                if (isInteger(sub1Result)) {
+                if (isInteger(sub1Result) && sub1Result >= 0) {
                     List<Double> next = new ArrayList<>(remaining);
                     next.add(sub1Result);
-                    String result = findHint(next);
+                    String result = findHint(next, diff);
                     if (result != null) {
                         return formatNumber(a) + " - " + formatNumber(b) + " = " + formatNumber(sub1Result) + ", " + result;
                     }
                 }
 
-                // 尝试减法 b-a（结果必须是整数）
+                // 尝试减法 b-a（结果必须是整数，不能是负数）
                 double sub2Result = b - a;
-                if (isInteger(sub2Result)) {
+                if (isInteger(sub2Result) && sub2Result >= 0) {
                     List<Double> next = new ArrayList<>(remaining);
                     next.add(sub2Result);
-                    String result = findHint(next);
+                    String result = findHint(next, diff);
                     if (result != null) {
                         return formatNumber(b) + " - " + formatNumber(a) + " = " + formatNumber(sub2Result) + ", " + result;
                     }
@@ -181,34 +185,37 @@ public class GameActivity extends AppCompatActivity {
 
                 // 尝试乘法（结果必须是整数）
                 double mulResult = a * b;
-                if (isInteger(mulResult)) {
+                if (isInteger(mulResult) && mulResult >= 0) {
                     List<Double> next = new ArrayList<>(remaining);
                     next.add(mulResult);
-                    String result = findHint(next);
+                    String result = findHint(next, diff);
                     if (result != null) {
                         return formatNumber(a) + " × " + formatNumber(b) + " = " + formatNumber(mulResult) + ", " + result;
                     }
                 }
 
-                // 尝试除法 a/b（结果必须是整数）
-                if (b != 0 && a % b == 0) {
-                    double div1Result = a / b;
-                    List<Double> next = new ArrayList<>(remaining);
-                    next.add(div1Result);
-                    String result = findHint(next);
-                    if (result != null) {
-                        return formatNumber(a) + " ÷ " + formatNumber(b) + " = " + formatNumber(div1Result) + ", " + result;
+                // 入门难度不使用除法
+                if (diff != 1) {
+                    // 尝试除法 a/b（结果必须是整数）
+                    if (b != 0 && a % b == 0) {
+                        double div1Result = a / b;
+                        List<Double> next = new ArrayList<>(remaining);
+                        next.add(div1Result);
+                        String result = findHint(next, diff);
+                        if (result != null) {
+                            return formatNumber(a) + " ÷ " + formatNumber(b) + " = " + formatNumber(div1Result) + ", " + result;
+                        }
                     }
-                }
 
-                // 尝试除法 b/a（结果必须是整数）
-                if (a != 0 && b % a == 0) {
-                    double div2Result = b / a;
-                    List<Double> next = new ArrayList<>(remaining);
-                    next.add(div2Result);
-                    String result = findHint(next);
-                    if (result != null) {
-                        return formatNumber(b) + " ÷ " + formatNumber(a) + " = " + formatNumber(div2Result) + ", " + result;
+                    // 尝试除法 b/a（结果必须是整数）
+                    if (a != 0 && b % a == 0) {
+                        double div2Result = b / a;
+                        List<Double> next = new ArrayList<>(remaining);
+                        next.add(div2Result);
+                        String result = findHint(next, diff);
+                        if (result != null) {
+                            return formatNumber(b) + " ÷ " + formatNumber(a) + " = " + formatNumber(div2Result) + ", " + result;
+                        }
                     }
                 }
             }
@@ -244,7 +251,16 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private List<Double> generateNumbers(int difficulty) {
-        int maxValue = (difficulty == 1) ? 9 : (difficulty == 2) ? 10 : 13;
+        int maxValue;
+        if (difficulty == 1) {
+            maxValue = 9;  // 入门: 1-9
+        } else if (difficulty == 2) {
+            maxValue = 9;  // 容易: 1-9
+        } else if (difficulty == 3) {
+            maxValue = 10;  // 中等: 1-10
+        } else {
+            maxValue = 13;  // 困难: 1-13
+        }
         Random random = new Random();
         
         for (int attempt = 0; attempt < 100; attempt++) {
@@ -252,7 +268,7 @@ public class GameActivity extends AppCompatActivity {
             for (int i = 0; i < 4; i++) {
                 nums.add((double) (random.nextInt(maxValue) + 1));
             }
-            if (canMake24(nums)) {
+            if (canMake24(nums, difficulty)) {
                 return nums;
             }
         }
@@ -264,7 +280,7 @@ public class GameActivity extends AppCompatActivity {
         return nums;
     }
 
-    private boolean canMake24(List<Double> numbers) {
+    private boolean canMake24(List<Double> numbers, int difficulty) {
         if (numbers.size() == 1) {
             return Math.abs(numbers.get(0) - 24) < 0.001;
         }
@@ -281,20 +297,40 @@ public class GameActivity extends AppCompatActivity {
                 double a = numbers.get(i);
                 double b = numbers.get(j);
 
-                for (double result : new double[]{a + b, a - b, b - a, a * b}) {
-                    List<Double> next = new ArrayList<>(remaining);
-                    next.add(result);
-                    if (canMake24(next)) return true;
+                // 加法
+                List<Double> next = new ArrayList<>(remaining);
+                next.add(a + b);
+                if (canMake24(next, difficulty)) return true;
+
+                // 减法（结果不能是负数）
+                if (a - b >= 0) {
+                    next = new ArrayList<>(remaining);
+                    next.add(a - b);
+                    if (canMake24(next, difficulty)) return true;
                 }
-                if (b != 0) {
-                    List<Double> next = new ArrayList<>(remaining);
-                    next.add(a / b);
-                    if (canMake24(next)) return true;
+                if (b - a >= 0) {
+                    next = new ArrayList<>(remaining);
+                    next.add(b - a);
+                    if (canMake24(next, difficulty)) return true;
                 }
-                if (a != 0) {
-                    List<Double> next = new ArrayList<>(remaining);
-                    next.add(b / a);
-                    if (canMake24(next)) return true;
+
+                // 乘法
+                next = new ArrayList<>(remaining);
+                next.add(a * b);
+                if (canMake24(next, difficulty)) return true;
+
+                // 除法：入门难度不使用除法
+                if (difficulty != 1) {
+                    if (b != 0 && a % b == 0) {
+                        next = new ArrayList<>(remaining);
+                        next.add(a / b);
+                        if (canMake24(next, difficulty)) return true;
+                    }
+                    if (a != 0 && b % a == 0) {
+                        next = new ArrayList<>(remaining);
+                        next.add(b / a);
+                        if (canMake24(next, difficulty)) return true;
+                    }
                 }
             }
         }

@@ -50,6 +50,15 @@
         android:backgroundTint="#FFF44336"
         android:layout_margin="8dp"/>
 
+    <Button
+        android:id="@+id/btnExpert"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:text="@string/expert"
+        android:textSize="18sp"
+        android:backgroundTint="#FF9C27B0"
+        android:layout_margin="8dp"/>
+
     <!-- Powered by -->
     <View
         android:layout_width="match_parent"

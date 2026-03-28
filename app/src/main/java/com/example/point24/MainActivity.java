@@ -30,15 +30,19 @@ public class MainActivity extends AppCompatActivity {
             Button btnEasy = findViewById(R.id.btnEasy);
             Button btnMedium = findViewById(R.id.btnMedium);
             Button btnHard = findViewById(R.id.btnHard);
+            Button btnExpert = findViewById(R.id.btnExpert);
 
             if (btnEasy != null) {
-                btnEasy.setOnClickListener(v -> startGame(1));
+                btnEasy.setOnClickListener(v -> startGame(1));  // 入门
             }
             if (btnMedium != null) {
-                btnMedium.setOnClickListener(v -> startGame(2));
+                btnMedium.setOnClickListener(v -> startGame(2));  // 容易
             }
             if (btnHard != null) {
-                btnHard.setOnClickListener(v -> startGame(3));
+                btnHard.setOnClickListener(v -> startGame(3));  // 中等
+            }
+            if (btnExpert != null) {
+                btnExpert.setOnClickListener(v -> startGame(4));  // 困难
             }
             
             Log.d(TAG, "MainActivity created successfully");
@@ -73,9 +77,10 @@ public class MainActivity extends AppCompatActivity {
             int lastDifficulty = prefs.getInt(KEY_DIFFICULTY, 1);
             String message = "上次选择: ";
             switch (lastDifficulty) {
-                case 1: message += "容易"; break;
-                case 2: message += "中等"; break;
-                case 3: message += "困难"; break;
+                case 1: message += "入门"; break;
+                case 2: message += "容易"; break;
+                case 3: message += "中等"; break;
+                case 4: message += "困难"; break;
             }
             Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
